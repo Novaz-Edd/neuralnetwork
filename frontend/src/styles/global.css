@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-dark-900 text-white font-sans;
+    min-height: 100vh;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar        { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track  { background: #0d1427; }
+  ::-webkit-scrollbar-thumb  { background: #172344; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+
+  /* Range-input thumb styling */
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.55);
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  input[type='range']::-webkit-slider-thumb:hover {
+    background: #60a5fa;
+    box-shadow: 0 0 14px rgba(59, 130, 246, 0.75);
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.55);
+  }
+}
+
+/* ── Reusable component classes ────────────────────────────────────────────── */
+@layer components {
+  /* Card container */
+  .card {
+    @apply bg-dark-800 border border-dark-600 rounded-2xl shadow-card;
+  }
+
+  /* Card section heading */
+  .card-title {
+    @apply text-xs font-semibold uppercase tracking-widest text-brand-400 mb-4;
+  }
+
+  /* Primary action button */
+  .btn-primary {
+    @apply
+      w-full py-3 px-6
+      bg-brand-600 hover:bg-brand-500 active:bg-brand-700
+      text-white font-semibold text-sm tracking-wide
+      rounded-xl shadow-glow hover:shadow-glow-lg
+      transition-all duration-200
+      focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-dark-800
+      disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:bg-brand-600;
+  }
+
+  /* Text input */
+  .input-field {
+    @apply
+      w-full bg-dark-700 border border-dark-500
+      text-white text-sm font-mono
+      px-3 py-2 rounded-lg
+      focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500
+      transition-colors duration-150;
+  }
+
+  /* Form field label */
+  .label {
+    @apply block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider;
+  }
+}
