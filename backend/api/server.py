@@ -1,34 +1,24 @@
-import os
+from pathlib import Path
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from backend.model.network import NeuralNetwork
 
 app = FastAPI(title="Neural Network Visualizer API", version="1.0.0")
 
-# Base origins always allowed (local dev)
-_origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
-
-# Production frontend URL injected via Render environment variable
-_frontend_url = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
-if _frontend_url:
-    _origins.append(_frontend_url)
-
+# Allow CORS for local Vite dev server only
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_origins,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_methods=["GET"],
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-def home():
-    return {"message": "Neural Network Visualizer API is running."}
+# Absolute path to the compiled React app (built into frontend/dist/)
+DIST_DIR = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
 
 
 @app.get("/train")
@@ -55,4 +45,22 @@ def train(
         "predictions":  predictions.tolist(),
         "boundary":     boundary,
     }
+
+
+# ── Serve compiled React frontend ─────────────────────────────────────────────
+# Mount Vite's /assets/ folder (JS, CSS, images)
+if (DIST_DIR / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=DIST_DIR / "assets"), name="assets")
+
+
+@app.get("/")
+def serve_root():
+    """Serve the React app index page."""
+    return FileResponse(DIST_DIR / "index.html")
+
+
+@app.get("/{full_path:path}")
+def serve_spa(full_path: str):
+    """SPA fallback — all unmatched routes return index.html for React Router."""
+    return FileResponse(DIST_DIR / "index.html")
 

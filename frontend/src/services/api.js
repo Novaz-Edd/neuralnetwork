@@ -2,6 +2,8 @@ import axios from 'axios'
 
 // In production (Render static site) VITE_API_BASE_URL points to the backend
 // web service URL. In development the Vite proxy forwards relative requests.
+// Relative URL works for both local dev (Vite proxy) and production
+// (FastAPI serves the frontend from the same origin as the API).
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
 const client = axios.create({
